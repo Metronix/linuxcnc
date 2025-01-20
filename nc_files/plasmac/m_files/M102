@@ -1,0 +1,26 @@
+#!/usr/bin/python3
+import serial
+import time
+
+# Configurar a porta serial (substitua 'ttyAMA0' se for necessário)
+ser = serial.Serial('/dev/serial0', baudrate=9600, timeout=1)
+
+# Função para enviar dados
+def enviar_dados(dados):
+    global ser
+    ser.write(dados.encode())  # Enviar dados como bytes
+    print(f'Dados enviados: {dados}')
+
+# Função para ler dados
+def ler_dados():
+    global ser
+    time.sleep(3)  # Aguarda um momento para dados serem recebidos
+    if ser.in_waiting > 0:  # Verifica se há dados disponíveis
+        dados_recebidos = ser.readline().decode('utf-8').rstrip()
+        print(f'Dados recebidos: {dados_recebidos}')
+    else:
+        print('Nenhum dado recebido')
+
+# Exemplo de envio e leitura
+enviar_dados('Hello, UART!')  # Enviar dados
+ler_dados()  # Ler dados recebidos

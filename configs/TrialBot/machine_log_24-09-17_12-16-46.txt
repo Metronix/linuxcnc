@@ -1,0 +1,21 @@
+--- QtVCP Screen Started on: Tue, Sep 17 2024 12:13:59 ---
+--- TrialBot - QtPlasmaC v2.10-008.050, powered by QtVCP and LinuxCNC ---
+Tue17 12:14: Tool 0: torch
+Tue17 12:14: GUI power on
+Tue17 12:14: Machine homed
+Tue17 12:14: [Errno 13] Permission denied: '/home/cnc/linuxcnc-source/nc_files/test.ngc'
+Tue17 12:15: Saved: /home/cnc/Downloads/sent_shape.ngc
+Tue17 12:15: Zeroed Axis X
+Tue17 12:15: Zeroed Axis Z
+Tue17 12:15: Cycle started - Torch disabled
+Tue17 12:15: Cycle aborted
+Tue17 12:15: GUI power off
+Tue17 12:15: Machine idle
+Tue17 12:15: joint 0 on limit switch error
+Tue17 12:16: joint 0 on limit switch error
+Tue17 12:16: joint 0 on limit switch error
+Tue17 12:16: joint 0 on limit switch error
+Tue17 12:16: joint 0 on limit switch error
+Tue17 12:16: joint 0 on limit switch error
+Tue17 12:16: joint 0 on limit switch error
+Tue17 12:16: joint 0 on limit switch error

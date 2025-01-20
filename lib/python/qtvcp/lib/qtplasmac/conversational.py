@@ -25,6 +25,7 @@ from importlib import reload
 from PyQt5.QtCore import Qt, QCoreApplication
 from PyQt5.QtWidgets import QFileDialog, QMessageBox, QPushButton, QLabel, QLineEdit
 from PyQt5.QtWidgets import QComboBox
+from PyQt5.QtWidgets import QCheckBox
 from qtvcp.core import Status, Action
 from qtvcp.lib.qtplasmac import conv_settings as CONVSET
 from qtvcp.lib.qtplasmac import conv_line as CONVLINE
@@ -39,6 +40,7 @@ from qtvcp.lib.qtplasmac import conv_star as CONVSTAR
 from qtvcp.lib.qtplasmac import conv_gusset as CONVGUST
 from qtvcp.lib.qtplasmac import conv_sector as CONVSECT
 from qtvcp.lib.qtplasmac import conv_block as CONVBLCK
+from qtvcp.lib.qtplasmac import conv_traj as CONVTRAJ
 
 STATUS = Status()
 ACTION = Action()
@@ -199,6 +201,8 @@ def conv_block_pressed(P, W):
 def conv_shape_request(P, W, shape, material):
     if shape == 'conv_line':
         module = CONVLINE
+    elif shape == 'conv_traj':
+        module = CONVTRAJ
     elif shape == 'conv_circle':
         module = CONVCIRC
     elif shape == 'conv_ellipse':
@@ -642,6 +646,22 @@ def conv_widgets(P, W):
     W.idLabel = QLabel(_translate('Conversational', 'INNER DIA'))
     W.idEntry = QLineEdit()
     W.shLabel = QLabel(_translate('Conversational', 'SHAPE'))  # shared with different uses
+    W.dsLabel = QLabel(_translate('Conversational', 'DISTANCIA'))# Label para modo triangular para soldagem
+    W.dsEntry = QLineEdit()
+    W.velLabel = QLabel(_translate('Conversational', 'VELOCIDADE'))
+    W.velEntry = QLineEdit()
+    W.ampLabel = QLabel(_translate('Conversational', 'AMPLITUDE'))
+    W.ampEntry = QLineEdit()
+    W.freqLabel = QLabel(_translate('Conversational', 'FREQUÊNCIA'))
+    W.freqEntry = QLineEdit()# Fim dos labels e entradas para o modo triangular para soldagem
+    W.tp1Label =  QLabel(_translate('Conversational', 'TP1'))
+    W.tp1Entry =  QLineEdit()
+    W.tp2Label =  QLabel(_translate('Conversational', 'TP2'))
+    W.tp2Entry =  QLineEdit()
+    W.tdispLabel =  QLabel(_translate('Conversational', 'T Disparo'))
+    W.tdispEntry =  QLineEdit()
+    W.dirLabel = QLabel(_translate('Conversational', 'DIREÇÃO'))
+    W.dirCheck = QCheckBox()
     # triangle
     W.AaLabel = QLabel(_translate('Conversational', 'A ANGLE'))
     W.AaEntry = QLineEdit()

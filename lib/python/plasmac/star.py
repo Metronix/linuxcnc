@@ -135,6 +135,7 @@ def preview(Conv, fTmp, fNgc, fNgcBkp,
         elif 'm2' in line.lower() or 'm30' in line.lower():
             continue
         outNgc.write(line)
+    outTmp.write(f'\n#<tube-cut>=1\n')
     outTmp.write(f'\n(conversational star {points})\n')
     outTmp.write(f';using material #{matNumber}: {matName}\n')
     outTmp.write(f'M190 P{matNumber}\n')

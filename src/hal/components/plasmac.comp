@@ -339,7 +339,8 @@ variable float  creep_speed_dist_travelled; /* Sum of distance traveled during c
 variable float  creep_speed_scale;          /* scale of creep speed in proportion to standard cut feed rate */
 variable float  pierce_old_x;               /* tracking the last x location during pierce */
 variable float  pierce_old_y;               /* tracking the last y location during pierce */
-
+variable float  z_height_current;
+variable bool  flag = 0;
 // temp for testing forum post #210558
 // https://forum.linuxcnc.org/plasmac/42690-is-this-qtplasmac-expected-behaviour-cycle-start-and-jog-disabled?start=0#210558
 pin in  s32     low_cut_volts               "low cut voltage threshold while thc active";
@@ -358,7 +359,7 @@ option singleton yes;
 ;;
 
 #include "rtapi_math.h"
-
+#include <stdio.h>
 typedef enum{IDLE,
              PROBE_HEIGHT,
              PROBE_DOWN,
@@ -419,6 +420,7 @@ typedef enum{OFF,
          } laser_recovery_state_t;
 
 state_t state = IDLE;
+state_t anterior_state = IDLE;
 stop_type_t stop_type = NONE;
 move_direction_t move_direction = ZERO;
 probe_type_t probe_type = FLOAT;
@@ -461,6 +463,7 @@ float read_arc_voltage_buffer(int caller, int size, int index, float target, flo
 
 /* set an axis eoffset position at a set velocity */
 int offset_move(int offset, int vel, int target){
+	//
     if(offset - vel > target){
         offset -= vel;
     }else if(offset + vel < target){
@@ -469,6 +472,7 @@ int offset_move(int offset, int vel, int target){
         offset = target;
     }
     return offset;
+    
 }
 
 FUNCTION(_) {
@@ -560,14 +564,15 @@ FUNCTION(_) {
 // this height calculation is really only the target z height, we may not have reached the target yet
     /* output current z height */
 //    z_height = (z_offset_counts - zero_target) * offset_scale;
-
+	
 // this is probably more correct
 // we don't use z_relative anywhere so we could probably just rename it to z_height and remove the z_relative pin.
     /* output the relative Z height */
     if(zero_target){
-        z_height = z_offset_current - (zero_target * offset_scale);
+        z_relative = z_offset_current - (zero_target * offset_scale);
     }else{
-        z_height = axis_z_position - axis_z_min_limit;
+		//z_height = z_offset_current - (zero_target * offset_scale);
+         z_relative = axis_z_position - axis_z_min_limit;
     }
 
 // temp for auto-thc testing
@@ -607,8 +612,8 @@ FUNCTION(_) {
 
     /* set THC state */
 //FIXME not sure if we really need thc for tube cutting
-//    thc_enabled = (thc_enable && !thc_disable && !mesh_enable && !ignore_arc_ok_0 && !ignore_arc_ok_1 && (arc_lost_timer > arc_lost_delay - 0.000001) && tool != TUBE ? 1:0);
-    thc_enabled = (thc_enable && !thc_disable && !mesh_enable && !ignore_arc_ok_0 && !ignore_arc_ok_1 && (arc_lost_timer > arc_lost_delay - 0.000001) ? 1:0);
+  //  thc_enabled = (thc_enable && !thc_disable && !mesh_enable && !ignore_arc_ok_0 && !ignore_arc_ok_1 && (arc_lost_timer > arc_lost_delay - 0.000001) && tube_cut ? 1:0);
+	thc_enabled = (thc_enable && !thc_disable && !mesh_enable && !ignore_arc_ok_0 && !ignore_arc_ok_1 && (arc_lost_timer > arc_lost_delay - 0.000001) ? 1:0);
 
     /* set THC status */
     thc_active = (state == CUT_MODE_01 || state == CUT_MODE_2) && ((mode < 2 && target_volts) || (mode == 2 && arc_ok_out)) && thc_enabled && !cornerlock_is_locked && !voidlock_is_locked ? 1:0;
@@ -620,7 +625,7 @@ FUNCTION(_) {
         if(thc_activated_timer <= 0){
             thc_activated = FALSE;
         }
-    }else if(probe_required){
+    }else if(probe_required && !tube_cut){
         thc_activated = FALSE;
     }
 
@@ -938,19 +943,102 @@ FUNCTION(_) {
         torch_on = FALSE;
         torch_pulse_timer = 0;
         state = IDLE;
+        z_height = 0;
+        flag = 0;
     }else{
         /* if machine is on */
         switch(state){
             case IDLE:
+				
 //                if(!consumable_changing){
 //                    xy_offset_enable = FALSE;
 //                }
-//                if(!offsets_active && program_is_idle){
-//                    z_offset_enable = FALSE;
-//                }
+               /* if(offsets_active && program_is_idle){
+                    //printf("\n%d \t%d", offsets_active, program_is_idle);
+                    
+                   // z_offset_counts = 0;
+                    
+                }*/
+                //z_offset_enable = TRUE;
+                //z_offset_counts = 0;
+                
+                //if(program_is_running == 1 && offsets_active == 1 && (stop_type != NONE && stop_type != PAUSE )){
+                
+                //state = ZERO_HEIGHT;
+                //}
+                
+                if(program_is_paused){
+					
+                    z_offset_enable = TRUE;
+                    if(thc_enabled){
+						if(flag == 0){
+							z_height_current = z_relative;
+							flag = 1;
+						}
+                        /* lock thc if velocity < requested velocity * cornerlock threshold percentage */
+                        if(cornerlock_enable){
+                            if(current_velocity * 60 < requested_feed_rate * cornerlock_threshold * 0.01){
+                                cornerlock_is_locked = TRUE;
+                            }else if(cornerlock_is_locked && current_velocity * 60 > requested_feed_rate * 0.99){
+                                cornerlock_is_locked = FALSE;
+                            }
+                        }else{
+                            cornerlock_is_locked = FALSE;
+                        }
+                        if(move_down && !cornerlock_is_locked){
+                            if(z_offset_counts - thc_velocity <= offset_min){
+                                torch_on = FALSE;
+                                stop_type = PAUSE;
+                                program_pause = TRUE;
+                                rtapi_print_msg(RTAPI_MSG_ERR,"bottom limit reached while THC moving down.\n"
+                                                              "program is paused.\n");
+                                state = MAX_HEIGHT;
+                            }else{ /* move down at requested velocity */
+                                z_offset_counts -= thc_velocity;
+                                led_down = TRUE;
+                            }
+                        }else if(move_up && !cornerlock_is_locked){
+                            if(z_offset_counts + thc_velocity + safe_min >= offset_max){
+                                torch_on = FALSE;
+                                stop_type = PAUSE;
+                                program_pause = TRUE;
+                                rtapi_print_msg(RTAPI_MSG_ERR,"top limit reached while THC moving up.\n"
+                                                              "program is paused.\n");
+                                state = MAX_HEIGHT;
+                            }else{ /* move up at requested velocity */
+                                z_offset_counts += thc_velocity;
+                                led_up = TRUE;
+                            }
+                        }else{
+                            led_down = FALSE;
+                            led_up = FALSE;
+                        }
+                    }
+                    /* check if safe height is below maximum offset */
+                    if(z_offset_counts > offset_datum){
+                        safe_target += z_offset_counts - offset_datum;
+                        offset_datum = z_offset_counts;
+                        if(safe_target > offset_max){
+                            safe_target = offset_max;
+                            // warn if safe height less than 10mm (0.4")
+                            if(!safe_height_is_limited && z_offset_counts > safe_alarm){
+                                safe_height_is_limited = TRUE;
+                                if(units_per_mm == 1){
+                                    rtapi_print_msg(RTAPI_MSG_ERR, "safe traverse height has been reduced to less than 13mm.\n");
+                                }else{
+                                    rtapi_print_msg(RTAPI_MSG_ERR, "safe traverse height has been reduced to less than 0.5in.\n");
+                                }
+                                safe_available = offset_max - z_offset_counts;
+                            }
+                        }
+                    }
+                
+                }
+                
                 if(probe_inhibit && !float_switch && !breakaway && !ohmic_detected){
                     probe_inhibit = FALSE;
                 }else if(!probe_inhibit){
+					
                     /* if we get a paused motion request and we are paused */
                     if(paused_motion_speed && (stop_type == PAUSE || stop_type == WAIT)){
                         state = PAUSED_MOTION;
@@ -972,7 +1060,7 @@ FUNCTION(_) {
                             state = TORCH_ON;
                         }else{
                             feed_hold = FALSE;
-                            state = CUT_MODE_01;
+                            state = CUT_MODE_2;
                         }
                     /* if we get a torch start request and we are stopped or waiting for a restart */
                     }else if((tool == CUTTING || tool == SPOTTING || probe_test) && (stop_type == NONE || stop_type == WAIT) && homed){
@@ -1141,6 +1229,10 @@ FUNCTION(_) {
                         feed_hold = FALSE;
                     }
                 }
+                /*if(stop_type != PAUSE){
+                    z_offset_enable = FALSE;
+                    
+                }*/
                 break;
             case PROBE_HEIGHT:
                 z_offset_enable = TRUE;
@@ -1365,7 +1457,7 @@ FUNCTION(_) {
                         safe_target = offset_max;
                             axis_x_start = axis_x_position;
                             axis_y_start = axis_y_position;
-                            state = ZERO_HEIGHT;
+                            //state = ZERO_HEIGHT;
                     }else if(safe_min > offset_max && !probe_testing){
                         safe_target = offset_max;
                         rtapi_print_msg(RTAPI_MSG_ERR, "material is too high for safe traverse.\n"
@@ -1388,12 +1480,12 @@ FUNCTION(_) {
                         }
                         axis_x_start = axis_x_position;
                         axis_y_start = axis_y_position;
-                        state = ZERO_HEIGHT;
+                        //state = ZERO_HEIGHT;
                     }else{
                         safe_target = safe_preferred;
                         axis_x_start = axis_x_position;
                         axis_y_start = axis_y_position;
-                        state = ZERO_HEIGHT;
+                        //state = ZERO_HEIGHT;
                     }
                 }
                 probe_time += fperiod;
@@ -1401,7 +1493,15 @@ FUNCTION(_) {
             case ZERO_HEIGHT:
                 /* this case is not used at present it is just a waypoint */
                 /* ### do not go to zero height during offset probing ### */
-                state = PIERCE_HEIGHT;
+               // printf("\nstop_type  %d\n", stop_type);
+                z_offset_enable = TRUE;
+                if(z_offset_counts == 0){
+                    //z_offset_enable = FALSE;
+                    state = IDLE;
+                }else{
+                    
+                    z_offset_counts = offset_move(z_offset_counts, setup_velocity, 0);
+                }                
                 break;
             case PIERCE_HEIGHT:
                 z_offset_enable = TRUE;
@@ -1613,6 +1713,7 @@ FUNCTION(_) {
                             pierce_motion_delay_timer -= fperiod;
                         }else if(z_offset_counts != pierce_end_target){
                             // Sequence 2
+                            //printf("PIERCE DELAY = %d\n" , pierce_end_target);
                             rtapi_print_msg(RTAPI_MSG_DBG,"PIERCE_DELAY - Seq 2\n");
                             z_offset_enable = TRUE;
                             rtapi_print_msg(RTAPI_MSG_DBG,"PIERCE_DELAY - move z_offset_counts\n");
@@ -1640,7 +1741,7 @@ FUNCTION(_) {
                     offset_min = z_offset_counts - ((axis_z_position - axis_z_min_limit) / offset_scale);
                     offset_max = z_offset_counts + (axis_z_max_limit - axis_z_position - (max_offset * units_per_mm)) / offset_scale;
                     feed_hold = FALSE;
-                    state = CUT_MODE_01;
+                    state = CUT_MODE_2;
                 }else if((puddle_jump_delay || puddle_jump_percent != 100) && !cut_recovering){
                     puddle_jump_timer = puddle_jump_delay;
                     state = PUDDLE_JUMP;
@@ -1875,6 +1976,7 @@ FUNCTION(_) {
             case CUT_MODE_2:
                 /* thc control for mode 2 by move-up and move-down inputs (no void lock in this mode) */
                 /* if program is idle and spindle.0 is off then we shouldn't be here */
+                z_height = z_relative - z_height_current;
                 if(program_is_idle && !cutting_start){
                     state = IDLE;
                 }
@@ -1975,14 +2077,15 @@ FUNCTION(_) {
                 }
                 break;
             case SAFE_HEIGHT:
-                z_offset_enable = TRUE;
+				//printf("SAFE HEIGHT");
+                z_offset_enable = FALSE; //alterado Pedro
                 feed_hold = TRUE;
                 torch_on = FALSE;
                 if(!torch_off_timer || !torch_on){
                     cornerlock_is_locked = FALSE;
                     if(!probe_test || probe_test_error){
-                        if(z_offset_counts == safe_target){
-                            if((int)(z_offset_current * offset_res) == (int)(safe_target * offset_scale * offset_res)){
+                        //if(z_offset_counts == safe_target){
+                            //if((int)(z_offset_current * offset_res) == (int)(safe_target * offset_scale * offset_res)){
                                 if(stop_type == WAIT){
                                     feed_hold = FALSE;
                                 }
@@ -1990,22 +2093,24 @@ FUNCTION(_) {
                                 /* do height override here for for remainder of job */
                                 height_ovr_old = 0;
                                 state = END_CUT;
-                            }
+                            //}
                         /* move to safe height at setup velocity*/
-                        }else{
+                       /* }else{
+                            
                             z_offset_counts = offset_move(z_offset_counts, setup_velocity, safe_target);
-                        }
+                            
+                        }*/
                     }
                 }
                 break;
             case MAX_HEIGHT:
-                z_offset_enable = TRUE;
+                z_offset_enable = FALSE;
                 feed_hold = TRUE;
                 torch_on = FALSE;
                 cornerlock_is_locked = FALSE;
                 if(!probe_test || probe_test_error){
-                    if(z_offset_counts == 0){
-                        if((int)(z_offset_current * offset_res) == 0){
+                    //if(z_offset_counts == 0 ){
+                        //if((int)(z_offset_current * offset_res) == 0){
                             if(stop_type == WAIT){
                                 feed_hold = FALSE;
                             }
@@ -2026,11 +2131,14 @@ FUNCTION(_) {
                             }else{
                                     state = END_CUT;
                             }
-                        }
+                        //}
                     /* move to maximum height at setup velocity */
-                    }else{
-                        z_offset_counts = offset_move(z_offset_counts, setup_velocity, 0);
-                    }
+                  //}else{
+                        //printf("%d\n", offset_move(z_offset_counts, setup_velocity, 0));
+                        if(!program_is_paused){
+                        //z_offset_counts = offset_move(z_offset_counts, setup_velocity, 0);
+                        }
+                   //}
                 }
                 break;
             case END_CUT:
@@ -2058,9 +2166,9 @@ FUNCTION(_) {
                 cut_height_first = 0;
                 cut_height_last = 0;
                 if(program_is_idle){
-                    z_offset_enable = TRUE;
-                    if (z_offset_counts == 0){
-                        if(!offsets_active){
+                    z_offset_enable = FALSE;
+                    //if (z_offset_counts == 0){
+                        if(!offsets_active == 1 || offsets_active == 1){
                             first_cut_finished = FALSE;
                             stop_type = NONE;
                             safe_height_is_limited = FALSE;
@@ -2082,10 +2190,11 @@ FUNCTION(_) {
                             }
                         }
                     /* clear z offset at setup velocity */
-                    }else{
-                        z_offset_counts = offset_move(z_offset_counts, setup_velocity, 0);
-                    }
+                    //}else{
+                    //    z_offset_counts = offset_move(z_offset_counts, setup_velocity, 0);
+                   // }
                 }
+                flag = 1;
                 break;
             case TORCHPULSE:
                 /* single pulse the torch on and off */
@@ -2113,6 +2222,8 @@ FUNCTION(_) {
                 }
                 break;
             case PAUSED_MOTION:
+				rtapi_print_msg(RTAPI_MSG_INFO, "PAUSED_MOTION\n\n");
+				z_height =  z_height_current = z_relative;
                 if(paused_motion_speed){
                     paused_motion = TRUE;
                     adaptive_feed = paused_motion_speed;
@@ -2122,6 +2233,7 @@ FUNCTION(_) {
                     program_pause = TRUE;
                     feed_hold = TRUE;
                     adaptive_feed = 1;
+                    torch_on = FALSE;
                 }else if(program_is_paused && feed_hold){
                     paused_motion = FALSE;
                     state = CUT_RECOVERY_ON;
@@ -2486,6 +2598,7 @@ FUNCTION(_) {
                 rtapi_print_msg(RTAPI_MSG_INFO, "TORCHPULSE\n");
                 break;
             case 19:
+				printf("PAUSED_MOTION\n");
                 rtapi_print_msg(RTAPI_MSG_INFO, "PAUSED_MOTION\n");
                 break;
             case 20:

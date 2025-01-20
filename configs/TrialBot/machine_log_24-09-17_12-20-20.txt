@@ -1,0 +1,30 @@
+--- QtVCP Screen Started on: Tue, Sep 17 2024 12:17:01 ---
+--- TrialBot - QtPlasmaC v2.10-008.050, powered by QtVCP and LinuxCNC ---
+Tue17 12:17: Tool 0: torch
+Tue17 12:17: joint 0 on limit switch error
+Tue17 12:17: joint 0 on limit switch error
+Tue17 12:17: joint 0 on limit switch error
+Tue17 12:17: GUI power on
+Tue17 12:17: Machine homed
+Tue17 12:17: Zeroed Axis Y
+Tue17 12:18: Saved: /home/cnc/Downloads/test1.ngc
+Tue17 12:18: Cycle started - Torch enabled
+Tue17 12:19: Cycle paused
+Tue17 12:19: no arc detected after 3 start attempts
+program is paused.
+Tue17 12:19: Cycle aborted
+Tue17 12:19: Machine idle
+Tue17 12:19: Cycle started - Torch enabled
+Tue17 12:19: Cycle paused
+Tue17 12:19: Cycle aborted
+Tue17 12:19: Machine idle
+Tue17 12:19: Cycle started - Torch enabled
+Tue17 12:19: Cycle paused
+Tue17 12:19: Cycle aborted
+Tue17 12:19: Machine idle
+Tue17 12:19: Cycle started - Torch enabled
+Tue17 12:19: Cycle paused
+Tue17 12:19: Torch pulse started
+Tue17 12:19: Torch pulse ended manually
+Tue17 12:19: Torch pulse started
+Tue17 12:20: Torch pulse ended manually

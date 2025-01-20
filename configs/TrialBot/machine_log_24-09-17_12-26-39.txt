@@ -1,0 +1,10 @@
+--- QtVCP Screen Started on: Tue, Sep 17 2024 12:23:43 ---
+--- TrialBot - QtPlasmaC v2.10-008.050, powered by QtVCP and LinuxCNC ---
+Tue17 12:23: Tool 0: torch
+Tue17 12:24: GUI power on
+Tue17 12:24: Torch pulse started
+Tue17 12:26: Torch pulse completed
+Tue17 12:26: Torch pulse started
+Tue17 12:26: GUI power off
+Tue17 12:26: GUI power on
+Tue17 12:26: Torch pulse ended manually

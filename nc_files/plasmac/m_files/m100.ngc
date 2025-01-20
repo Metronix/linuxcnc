@@ -1,0 +1,5 @@
+o<M100> sub
+M3 $0
+G01 x5 y5 F500
+o<M100> endsub
+

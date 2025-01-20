@@ -4130,7 +4130,7 @@ class HandlerClass:
                 if ';;' in bCode:
                     altLabel = bCode[bCode.index(';;') + 2:].strip()
                     bCode = bCode[:bCode.index(';;')].strip()
-                if len(bCode.split()) == 3 and 'cutcritical' in bCode.lower():
+                if len(bCode.split()) == 3 and 'cutcritical' in bCode:
                     critical = True
                 elif len(bCode.split()) == 2:
                     critical = False
@@ -4139,7 +4139,7 @@ class HandlerClass:
                     msg1 = _translate('HandlerClass', 'Check button code for invalid arguments')
                     STATUS.emit('error', linuxcnc.OPERATOR_ERROR, f'{head}:\n{msg0} #{bNum}\n{msg1}\n')
                     continue
-                halpin = bCode.lower().split('toggle-halpin')[1].split(' ')[1].strip()
+                halpin = bCode.split('toggle-halpin')[1].split(' ')[1].strip()
                 excludedHalPins = ('plasmac.torch-pulse-start', 'plasmac.ohmic-test',
                                    'plasmac.probe-test', 'plasmac.consumable-change')
                 if halpin in excludedHalPins:
@@ -4302,8 +4302,8 @@ class HandlerClass:
             self.overlayProgress.setValue(0)
             self.remove_temp_materials()
             ACTION.OPEN_PROGRAM(lFile)
-        elif 'toggle-halpin' in commands.lower():
-            halpin = commands.lower().split('toggle-halpin')[1].split(' ')[1].strip()
+        elif 'toggle-halpin' in commands:
+            halpin = commands.split('toggle-halpin')[1].split(' ')[1].strip()
             try:
                 if halpin in self.halPulsePins and self.halPulsePins[halpin][3] > 0.05:
                     self.halPulsePins[halpin][3] = 0.0
