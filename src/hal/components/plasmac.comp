@@ -947,6 +947,7 @@ FUNCTION(_) {
         flag = 0;
     }else{
         /* if machine is on */
+        
         switch(state){
             case IDLE:
 				
@@ -1980,6 +1981,7 @@ FUNCTION(_) {
                 if(program_is_idle && !cutting_start){
                     state = IDLE;
                 }
+                
                 z_offset_enable = TRUE;
                 /* use feed_upm if it has a value */
                 if(feed_upm){
