@@ -1,9 +1,0 @@
-<?xml version="1.0" ?>
-<int-pncconf>
-  <property type="float" name="version" value="1.000000"/>
-  <property type="bool" name="always_shortcut" value="True"/>
-  <property type="bool" name="always_link" value="True"/>
-  <property type="bool" name="sim_hardware" value="False"/>
-  <property type="bool" name="chooselastconfig" value="True"/>
-  <property type="string" name="machinename" value="my-mill"/>
-</int-pncconf>
