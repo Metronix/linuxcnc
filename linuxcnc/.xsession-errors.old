@@ -1,0 +1,39 @@
+Xsession: X session started for cnc at Tue Apr  8 10:18:16 -03 2025
+dbus-update-activation-environment: setting DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+dbus-update-activation-environment: setting DISPLAY=:0
+dbus-update-activation-environment: setting XAUTHORITY=/home/cnc/.Xauthority
+localuser:cnc being added to access control list
+dbus-update-activation-environment: setting XDG_DATA_DIRS=/usr/share/xfce4:/usr/local/share/:/usr/share/
+dbus-update-activation-environment: setting QT_ACCESSIBILITY=1
+/usr/bin/x-session-manager: X server already running on display :0
+/usr/bin/iceauth:  creating new authority file /run/user/1000/ICEauthority
+xfce4-session-Message: 10:18:21.255: SSH authentication agent is already running
+gpg-agent: a gpg-agent is already running - not starting a new one
+
+(xfwm4:1205): xfwm4-WARNING **: 10:18:23.582: Unsupported GL renderer (llvmpipe (LLVM 15.0.6, 128 bits)).
+Xfce power manager is not running
+
+(xfce4-power-manager:1245): xfce4-power-manager-WARNING **: 10:18:26.013: could not map keysym 1008ffa8 to keycode
+
+
+** (xfce4-power-manager:1245): WARNING **: 10:18:26.074: No outputs have backlight property
+
+(xfce4-power-manager:1245): xfce4-power-manager-WARNING **: 10:18:26.362: Failed to get keyboard max brightness level : GDBus.Error:org.freedesktop.DBus.Error.UnknownMethod: Object does not exist at path “/org/freedesktop/UPower/KbdBacklight”
+Another notification daemon is running, exiting
+Xfce Power Manager: Another power manager is already running
+
+** (wrapper-2.0:1277): WARNING **: 10:18:27.603: No outputs have backlight property
+
+** (xiccd:1272): WARNING **: 10:18:28.655: EDID is empty
+
+** (xiccd:1272): CRITICAL **: 10:18:28.722: Gamma size is 0 at output xrandr-default
+[GFX1-]: glxtest: ManageChildProcess failed
+
+[GFX1-]: glxtest: X error, error_code=10, request_code=151, minor_code=5
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+
+(xfwm4:1205): xfwm4-WARNING **: 11:23:08.550: unmanaged net_wm_state (window 0x1817a77, atom "_NET_WM_STATE_STAYS_ON_TOP")
+
+(xfwm4:1205): xfwm4-WARNING **: 14:51:12.699: unmanaged net_wm_state (window 0x380011f, atom "_NET_WM_STATE_STAYS_ON_TOP")
+
+(wrapper-2.0:1278): GLib-GObject-CRITICAL **: 15:00:34.448: g_object_unref: assertion 'G_IS_OBJECT (object)' failed

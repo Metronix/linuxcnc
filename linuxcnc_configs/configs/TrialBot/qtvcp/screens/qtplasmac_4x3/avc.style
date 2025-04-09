@@ -1,0 +1,29 @@
+/****** DEFAULT ************/
+* {
+    color: #ffffff;
+    background: #121212;
+    outline: none }
+
+*:disabled {
+    color: inactive;
+    background: #121212;
+    border-color: inactive }
+
+/****** FRAME ************/
+#avc_control{
+    border: 1px solid #008abc;
+    background: #121212;
+    border-radius: 4px }
+
+/****** LABEL ************/
+#avc_Label {
+    color: #121212;
+    background: #008abc;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px }
+
+#arc_voltage {
+    border: 1px solid #008abc;
+    border-radius: 4;
+    margin: 0 0 0 0;
+    font: 32pt }

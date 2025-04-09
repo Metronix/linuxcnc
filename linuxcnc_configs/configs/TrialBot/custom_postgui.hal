@@ -1,0 +1,15 @@
+# Include your custom_postgui HAL commands here
+# This file will not be overwritten when you run stepconf again
+loadrt toggle count=1
+loadrt toggle2nist count=1
+addf toggle.0 servo-thread
+addf toggle2nist.0 servo-thread
+
+
+# ---PAUSE/RESUME--
+
+net btn_pause toggle.0.in <= hal_gpio.PIN29-in-not
+net pause_btn_pwr toggle2nist.0.in <= toggle.0.out
+net plasmac:program-is-paused => toggle2nist.0.is-on
+net test_1 qtplasmac.ext_pause <= toggle2nist.0.on
+net test_2 qtplasmac.ext_run_pause <= toggle2nist.0.off

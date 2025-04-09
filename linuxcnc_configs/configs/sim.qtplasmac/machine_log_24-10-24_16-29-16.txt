@@ -1,0 +1,5 @@
+--- QtVCP Screen Started on: Thu, Oct 24 2024 16:29:05 ---
+--- qtplasmac-metric - QtPlasmaC v2.10-008.050, powered by QtVCP and LinuxCNC ---
+Thu24 16:29: Tool 0: torch 
+Thu24 16:29: Emergency stop cleared
+Thu24 16:29: GUI power on

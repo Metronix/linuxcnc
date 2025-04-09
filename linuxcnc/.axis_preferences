@@ -1,0 +1,18 @@
+[DEFAULT]
+tto_g11 = False
+show_program = True
+show_rapids = True
+program_alpha = False
+show_live_plot = True
+show_tool = True
+show_extents = True
+show_offsets = True
+grid_size = 0.0
+show_machine_limits = True
+show_machine_speed = True
+show_distance_to_go = False
+dro_large_font = False
+block_delete = True
+optional_stop = True
+recentfiles = 
+

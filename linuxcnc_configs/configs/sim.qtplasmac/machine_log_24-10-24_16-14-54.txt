@@ -1,0 +1,52 @@
+--- QtVCP Screen Started on: Thu, Oct 24 2024 16:09:54 ---
+--- qtplasmac-metric - QtPlasmaC v2.9-238.314, powered by QtVCP and LinuxCNC ---
+Thu24 16:09: Tool 0: No Tool
+Thu24 16:09: Emergency stop cleared
+Thu24 16:10: GUI power on
+Thu24 16:10: Machine homed
+Thu24 16:10: Tool 0: torch 
+Thu24 16:10: Loaded: /home/cnc/linuxcnc/nc_files/examples/tort.ngc
+Thu24 16:10: Axis Limit Error:
+X move would exceed the minimum limit by 23.39mm
+Y move would exceed the minimum limit by 22.45mm
+Thu24 16:10: Loaded: /home/cnc/Downloads/sent_shape.ngc
+Thu24 16:10: G-Code error in sent_shape.ngc
+Near line 9 of
+/tmp/emcflt-y02xf0gv.d/sent_shape.ngc
+M-code greater than 199: M202
+Thu24 16:10: Reloaded: /home/cnc/Downloads/sent_shape.ngc
+Thu24 16:10: G-Code error in sent_shape.ngc
+Near line 9 of
+/tmp/emcflt-y02xf0gv.d/sent_shape.ngc
+M-code greater than 199: M202
+Thu24 16:11: Saved: /home/cnc/Downloads/sent_shape.ngc
+Thu24 16:11: Cycle started - Torch disabled
+Thu24 16:11: Cycle paused
+Thu24 16:11: float switch activated
+program is paused.
+Thu24 16:11: Cycle aborted
+Thu24 16:11: Machine idle
+Thu24 16:11: Cycle started - Torch disabled
+Thu24 16:11: valid arc lost
+program is paused.
+Thu24 16:11: Cycle paused
+Thu24 16:11: Cycle aborted
+Thu24 16:11: Machine idle
+Thu24 16:11: Cycle started - Torch enabled
+Thu24 16:11: Machine idle
+Thu24 16:11: Cycle started - Torch enabled
+Thu24 16:11: Cycle aborted
+Thu24 16:11: Machine idle
+Thu24 16:12: Cycle started - Torch enabled
+Thu24 16:12: Machine idle
+Thu24 16:13: Cycle started - Torch enabled
+Thu24 16:13: Emergency stop pressed
+Thu24 16:13: Machine idle
+Thu24 16:13: GUI power off
+Thu24 16:13: Emergency stop cleared
+Thu24 16:14: GUI power on
+Thu24 16:14: Cycle started - Torch enabled
+Thu24 16:14: Cycle paused
+Thu24 16:14: Cycle resumed
+Thu24 16:14: Cycle aborted
+Thu24 16:14: Machine idle

@@ -1,0 +1,7 @@
+(MSG, Checando pino: #<_hal_digital_in_00>)
+o<M100> sub
+	M0
+	M3 $0
+	G4 P#1
+o<M100> endsub
+

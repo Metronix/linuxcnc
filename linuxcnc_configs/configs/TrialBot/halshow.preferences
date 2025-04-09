@@ -1,0 +1,20 @@
+# Halshow settings
+# This file is generated automatically.
+wm geometry . 700x553+821+128
+placeFrames 0.40261627906976744
+set ::ratio 0.40261627906976744
+set ::old_w_leftf 277
+set ::watchlist {
+    pin+plasmac.float-switch-travel
+    pin+plasmac.time
+    pin+base-thread.time
+    pin+plasmac.torch-pulse-time
+    pin+servo-thread.time
+}
+set ::workmode watchhal
+set ::watchInterval 1
+set ::col1_width 100
+set ::ffmts 
+set ::ifmts 
+set ::alwaysOnTop 1
+set ::autoSaveWatchlist 1

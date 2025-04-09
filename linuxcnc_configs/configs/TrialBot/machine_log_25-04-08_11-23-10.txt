@@ -1,0 +1,17 @@
+--- QtVCP Screen Started on: Tue, Apr 08 2025 10:21:06 ---
+--- TrialBot - QtPlasmaC v2.10-008.050, powered by QtVCP and LinuxCNC ---
+Tue08 10:21: Tool 0: torch
+Tue08 10:23: GUI power on
+Tue08 10:24: Machine homed
+Tue08 10:24: Must be in MDI mode to issue MDI command
+Tue08 10:24: Must be in MDI mode to issue MDI command
+Tue08 10:26: Linear move on line 0 would exceed X's positive limit
+Tue08 10:26: Linear move on line 0 would exceed joint 0's positive limit
+Tue08 10:26: invalid params in linear command
+Tue08 10:26: Linear move on line 0 would exceed X's positive limit
+Tue08 10:26: Linear move on line 0 would exceed joint 0's positive limit
+Tue08 10:26: invalid params in linear command
+Tue08 10:27: Must be in MDI mode to issue MDI command
+Tue08 10:27: Must be in MDI mode to issue MDI command
+Tue08 10:28: Must be in MDI mode to issue MDI command
+Tue08 10:47: JOG_INCR Mode is TELEOP, cannot jog joint
