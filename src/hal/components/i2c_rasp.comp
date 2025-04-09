@@ -99,7 +99,7 @@ int connection(){
 }
 void user_mainloop(void) {
     while(1){
-        usleep(100000);
+        usleep(50000);
         if (flag_conection == 0) {
             error_handler = connection();
             flag_conection = (error_handler == 0) ? 1 : 0; 
@@ -108,22 +108,27 @@ void user_mainloop(void) {
             switch (state_handler){
                 case 1:
                     Estados = THC_OFF;
+                    
                     break;
                 case 3:
                     Estados = LER_CONFIG;
+                    
                     break;
                 case 4:
                     Estados = GRAVAR;
+                    
                     break;
                 case 5:
                     Estados = TENSAO;
+                    
                     break;
                 default: 
                     break;
             }
-            state_handler_old = state_handler;
+           state_handler_old = state_handler;
         }
         switch (Estados){
+        
             case IDLE:
                 
                 if(thc_enable){

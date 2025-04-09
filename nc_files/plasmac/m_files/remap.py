@@ -17,3 +17,4 @@
 #
 from stdglue import *
 import rs232
+import liga
